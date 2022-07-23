@@ -17,13 +17,13 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect("/");
 };
 
+
 exports.getProducts = (req, res, next) => {
   Product.getProducts((products) => {
-    res.render("shop/product-list", {
+    res.render("admin/products", {
       products: products,
-      pageTitle: "All Products",
-      path: "/",
-      activeProducts: true,
+      pageTitle: "Admin Products",
+      path: "/admin/products",
     });
   });
-};
+}
