@@ -19,7 +19,7 @@ const readProductsFromFile = (callback) => {
 class Product {
   constructor(title, imageUrl, price, description) {
     this.title = title;
-    this.imageUrl = 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png';
+    this.imageUrl = imageUrl;
     this.price = price;
     this.description = description;
   }
