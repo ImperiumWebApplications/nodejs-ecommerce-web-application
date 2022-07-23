@@ -17,8 +17,11 @@ const readProductsFromFile = (callback) => {
 };
 
 class Product {
-  constructor(title) {
+  constructor(title, imageUrl, price, description) {
     this.title = title;
+    this.imageUrl = 'https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png';
+    this.price = price;
+    this.description = description;
   }
   save() {
     // Read the contents of the products.json file and parse it into an array
