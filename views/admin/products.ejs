@@ -1,3 +1,35 @@
 <%- include('../includes/head.ejs') %>
+<main>
+  <h1>My Products</h1>
+  <!-- Convert the above code to ejs -->
+  <div class="grid">
+    <!-- Check if the length of products array is not null -->
+    <% if (products.length) { %>
+    <!-- Loop through the products array -->
+    <% products.forEach(function(product) { %>
+    <article class="card product-item">
+      <header class="card__header">
+        <h1 class="product__title"><%= product.title %></h1>
+      </header>
+      <div class="card__image">
+        <img src="<%= product.imageUrl %>" alt="<%= product.title %>" />
+      </div>
+      <div class="card__content">
+        <h2 class="product__price">$<%= product.price %></h2>
+        <p class="product__description"><%= product.description %></p>
+      </div>
+      <div class="card__actions">
+        <a href="/admin/products/<%= product.id %>" class="btn">Edit</a>
+        <form action="/admin/delete-product" method="post">
+          <input type="hidden" name="id" value="<%= product.id %>" />
+          <button class="btn" type="submit">Delete</button>
+        </form>
+      </div>
+    </article>
+    <% }); %> <% } else { %>
+    <p>No products found</p>
+    <% } %>
+  </div>
+</main>
 
 <%- include('../includes/end.ejs') %>
