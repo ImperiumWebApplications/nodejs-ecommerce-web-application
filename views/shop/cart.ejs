@@ -3,4 +3,33 @@
 
     <body>
         <%- include('../includes/navigation.ejs') %>
+
+        <main>
+            <!-- Check if the cart.items has non null length -->
+            <!-- If it does, render all the cart items in an unordered list -->
+            <!-- If it doesn't, render a message that says "Your cart is empty" -->
+            <% if (cart.items.length > 0) { %>
+                <ul>
+                    <% cart.items.forEach(function(item) { %>
+                        <li>
+                            <p>
+                                <%- item.name %>
+                                (<%- item.quantity %>)
+                            </p>
+
+                            <form action="/cart-delete-item" method="post">
+                                <input type="hidden" name="productId" value="<%= item.id %>">
+                                <button type="submit" class="btn">Delete</button>
+                            </form>
+                          
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>Your cart is empty</p>
+            <% } %>
+
+
+        </main>
+
         <%- include('../includes/end.ejs') %>

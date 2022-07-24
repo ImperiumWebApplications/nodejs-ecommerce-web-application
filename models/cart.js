@@ -64,6 +64,17 @@ class Cart {
       JSON.stringify(cart)
     );
   }
+
+  static getCartItems(callback) {
+    const cart = fs.existsSync(path.join(__dirname, "../data/cart.json"))
+      ? JSON.parse(fs.readFileSync(path.join(__dirname, "../data/cart.json")))
+      : {
+          items: [],
+          totalPrice: 0,
+        };
+
+    callback(cart);
+  }
 }
 
 module.exports = Cart;

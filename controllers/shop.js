@@ -22,9 +22,12 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    pageTitle: "Your Cart",
-    path: "/cart",
+  Cart.getCartItems((cart) => {
+    res.render("shop/cart", {
+      pageTitle: "Your Cart",
+      path: "/cart",
+      cart: cart,
+    });
   });
 };
 
@@ -32,6 +35,14 @@ exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   Product.findById(productId, (product) => {
     Cart.addProduct(product);
+  });
+  res.redirect("/cart");
+};
+
+exports.postCartDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  Product.findById(productId, (product) => {
+    Cart.removeProduct(productId, product.price);
   });
   res.redirect("/cart");
 };
