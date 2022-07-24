@@ -43,18 +43,19 @@ class Product {
           }
         );
       });
+    } else {
+      this.id = Math.random().toString();
+      readProductsFromFile((products) => {
+        products.push(this);
+        fs.writeFile(
+          path.join(__dirname, "../data/products.json"),
+          JSON.stringify(products),
+          (err) => {
+            console.log(err);
+          }
+        );
+      });
     }
-    this.id = Math.random().toString();
-    readProductsFromFile((products) => {
-      products.push(this);
-      fs.writeFile(
-        path.join(__dirname, "../data/products.json"),
-        JSON.stringify(products),
-        (err) => {
-          console.log(err);
-        }
-      );
-    });
   }
   // Define getProducts method which returns the products array
   static getProducts(callback) {
