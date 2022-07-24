@@ -17,8 +17,8 @@ const readProductsFromFile = (callback) => {
 };
 
 class Product {
-  constructor(title, imageUrl, price, description) {
-    this.id = Math.random().toString();
+  constructor(id = null, title, imageUrl, price, description) {
+    this.id = id ? id : Math.random().toString();
     this.title = title;
     this.imageUrl = imageUrl;
     this.price = price;
@@ -30,6 +30,20 @@ class Product {
     // Write the contents to the products.json file
     readProductsFromFile((products) => {
       products.push(this);
+      fs.writeFile(
+        path.join(__dirname, "../data/products.json"),
+        JSON.stringify(products),
+        (err) => {
+          console.log(err);
+        }
+      );
+    });
+  }
+
+  update(id) {
+    readProductsFromFile((products) => {
+      const productIndex = products.findIndex((p) => p.id === id);
+      products[productIndex] = this;
       fs.writeFile(
         path.join(__dirname, "../data/products.json"),
         JSON.stringify(products),

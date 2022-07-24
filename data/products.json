@@ -1,9 +1,1 @@
-[
-  {
-    "id": "0.9051432492714391",
-    "title": "First Product",
-    "imageUrl": "https://static.oprah.com/images/201111/omag/200304-omag-book-publish-600x411.jpg",
-    "price": "100",
-    "description": "This is some description"
-  }
-]
+[{"id":"0.2847346144310947","title":"Another Product","imageUrl":"https://static.oprah.com/images/201111/omag/200304-omag-book-publish-600x411.jpg","price":"100","description":"This is some description"}]

@@ -41,6 +41,38 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
+exports.postEditProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const updatedPrice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDescription = req.body.description;
+  Product.findById(productId, (product) => {
+    if (product.title !== updatedTitle) {
+      product.title = updatedTitle;
+    }
+    if (product.price !== updatedPrice) {
+      product.price = updatedPrice;
+    }
+    if (product.imageUrl !== updatedImageUrl) {
+      product.imageUrl = updatedImageUrl;
+    }
+    if (product.description !== updatedDescription) {
+      product.description = updatedDescription;
+    }
+    const updatedProduct = new Product(
+      productId,
+      product.title,
+      product.imageUrl,
+      product.price,
+      product.description
+    );
+
+    updatedProduct.update(productId);
+  });
+  res.redirect("/admin/products");
+};
+
 exports.getProducts = (req, res, next) => {
   Product.getProducts((products) => {
     res.render("admin/products", {
