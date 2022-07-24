@@ -15,7 +15,13 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   if (title) {
-    const product = new Product(title, imageUrl, price, description);
+    const product = new Product(
+      null,
+      title,
+      imageUrl,
+      price,
+      description
+    );
     product.save();
   }
   res.redirect("/");
@@ -68,7 +74,7 @@ exports.postEditProduct = (req, res, next) => {
       product.description
     );
 
-    updatedProduct.update(productId);
+    updatedProduct.save(productId);
   });
   res.redirect("/admin/products");
 };

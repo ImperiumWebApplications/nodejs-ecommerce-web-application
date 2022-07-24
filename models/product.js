@@ -17,8 +17,8 @@ const readProductsFromFile = (callback) => {
 };
 
 class Product {
-  constructor(id = null, title, imageUrl, price, description) {
-    this.id = id ? id : Math.random().toString();
+  constructor(id, title, imageUrl, price, description) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.price = price;
@@ -28,22 +28,25 @@ class Product {
     // Read the contents of the products.json file and parse it into an array
     // Append the new product to the array
     // Write the contents to the products.json file
+    if (this.id) {
+      readProductsFromFile((products) => {
+        const existingProductIndex = products.findIndex(
+          (product) => product.id === this.id
+        );
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(
+          path.join(__dirname, "../data/products.json"),
+          JSON.stringify(updatedProducts),
+          (err) => {
+            console.log(err);
+          }
+        );
+      });
+    }
+    this.id = Math.random().toString();
     readProductsFromFile((products) => {
       products.push(this);
-      fs.writeFile(
-        path.join(__dirname, "../data/products.json"),
-        JSON.stringify(products),
-        (err) => {
-          console.log(err);
-        }
-      );
-    });
-  }
-
-  update(id) {
-    readProductsFromFile((products) => {
-      const productIndex = products.findIndex((p) => p.id === id);
-      products[productIndex] = this;
       fs.writeFile(
         path.join(__dirname, "../data/products.json"),
         JSON.stringify(products),
