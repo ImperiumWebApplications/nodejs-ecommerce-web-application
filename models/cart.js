@@ -7,7 +7,6 @@ class Cart {
   }
 
   static addProduct(product) {
-    console.log("Product", product);
     // Get the existing cart for the user from cart.json
     // If the cart doesn't exist, create a new cart
     // Analyze the cart to see if the product is already in the cart
