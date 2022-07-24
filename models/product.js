@@ -41,7 +41,14 @@ class Product {
   }
   // Define getProducts method which returns the products array
   static getProducts(callback) {
-    readProductsFromFile(callback)
+    readProductsFromFile(callback);
+  }
+
+  static findById(id, callback) {
+    readProductsFromFile((products) => {
+      const product = products.find((product) => product.id === id);
+      callback(product);
+    });
   }
 }
 

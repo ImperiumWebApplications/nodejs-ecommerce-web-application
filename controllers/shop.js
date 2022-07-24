@@ -46,3 +46,15 @@ exports.getOrders = (req, res, next) => {
 }
 
 
+exports.getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  Product.findById(productId, (product) => {
+    res.render("shop/product-detail", {
+      product: product,
+      pageTitle: product.title,
+      path: "/products",
+    });
+  })
+}
+
+
