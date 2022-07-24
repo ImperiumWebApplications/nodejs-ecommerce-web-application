@@ -1,6 +1,7 @@
 // Import the modules for file handling
 const fs = require("fs");
 const path = require("path");
+const Cart = require("./cart");
 
 // Create a helper method readProductsFromFile() which executes a callback with the products from the file.
 const readProductsFromFile = (callback) => {
@@ -65,6 +66,7 @@ class Product {
         path.join(__dirname, "../data/products.json"),
         JSON.stringify(updatedProducts),
         (err) => {
+          Cart.removeProduct(id);
           console.log(err);
         }
       );

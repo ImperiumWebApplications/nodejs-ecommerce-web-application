@@ -39,31 +39,26 @@ class Cart {
       path.join(__dirname, "../data/cart.json"),
       JSON.stringify(cart)
     );
-    
   }
 
   static removeProduct(productId) {
     // Get the existing cart for the user from cart.json
-    // If the cart doesn't exist, create a new cart
     // Analyze the cart to see if the product is already in the cart
     // If the product is already in the cart, decrease the quantity
     // If the product is not in the cart, do nothing
+    // If the cart has quantity of 0, remove the product from the cart
     // Save the cart back to cart.json
     const cart = fs.existsSync(path.join(__dirname, "../data/cart.json"))
       ? JSON.parse(fs.readFileSync(path.join(__dirname, "../data/cart.json")))
-      : {
-          items: [],
-          totalPrice: 0,
-        };
-
+      : { items: [], totalPrice: 0 };
     const productIndex = cart.items.findIndex((item) => item.id === productId);
-    if (productIndex === -1) {
-      return;
-    } else {
+    if (productIndex !== -1) {
       cart.items[productIndex].quantity -= 1;
+      cart.totalPrice -= cart.items[productIndex].price;
+      if (cart.items[productIndex].quantity === 0) {
+        cart.items.splice(productIndex, 1);
+      }
     }
-    cart.totalPrice -= +cart.items[productIndex].price;
-
     fs.writeFileSync(
       path.join(__dirname, "../data/cart.json"),
       JSON.stringify(cart)
