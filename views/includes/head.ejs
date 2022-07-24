@@ -1,33 +1,9 @@
-<!-- Create a header ejs includes for the header content -->
-<!-- Other files should be able to extend this file and use the layout -->
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><%= pageTitle %></title>
-    <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="/css/forms.css" />
-    <link rel="stylesheet" href="/css/product.css" />
-  </head>
-
-  <body>
-    <header class="main-header">
-      <nav class="main-header__nav">
-        <ul class="main-header__item-list">
-          <li class="main-header__item"><a class="<%= path ==='/' ? 'active' : '' %>" href="/">Shop</a></li>
-          <li class="main-header__item"><a class="<%= path ==='/products' ? 'active' : '' %>" href="/products">Products</a></li>
-          <li class="main-header__item"><a class="<%= path ==='/cart' ? 'active' : '' %>" href="/cart">Cart</a></li>
-          <li class="main-header__item"><a class="<%= path ==='/orders' ? 'active' : '' %>" href="/orders">Orders</a></li>
-
-          <li class="main-header__item">
-            <a class="<%= path ==='/admin/add-product'? 'active': '' %>" href="/admin/add-product">Add Product</a>
-          </li>
-          <li class="main-header__item">
-            <a class="<%= path ==='/admin/products'? 'active': '' %>" href="/admin/products">Admin Products</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <link rel="stylesheet" href="/css/main.css">
