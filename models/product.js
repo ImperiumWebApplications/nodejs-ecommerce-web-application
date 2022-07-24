@@ -18,6 +18,7 @@ const readProductsFromFile = (callback) => {
 
 class Product {
   constructor(title, imageUrl, price, description) {
+    this.id = Math.random().toString();
     this.title = title;
     this.imageUrl = imageUrl;
     this.price = price;
