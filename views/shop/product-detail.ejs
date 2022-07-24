@@ -20,6 +20,8 @@
             <%- product.description %>
           </p>
           <form action="/cart" method="post">
+            <!-- Send product id -->
+            <input type="hidden" name="id" value="<%- product.id %>">
             <button type="submit">Add To Cart</button>
           </form>
         </main>

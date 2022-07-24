@@ -50,6 +50,68 @@ class Product {
       callback(product);
     });
   }
+
+  static addToCart(id, price, title, userId, cartId, callback) {
+    readProductsFromFile((products) => {
+      const product = products.find((product) => product.id === id);
+      if (product) {
+        const cart = {
+          id: cartId,
+          userId: userId,
+          products: [
+            {
+              id: id,
+              title: title,
+              price: price,
+              quantity: 1,
+            },
+          ],
+        };
+        fs.readFile(
+          path.join(__dirname, "../data/carts.json"),
+          (err, fileContent) => {
+            if (err) {
+              fs.writeFile(
+                path.join(__dirname, "../data/carts.json"),
+                JSON.stringify([cart]),
+                (err) => {
+                  console.log(err);
+                }
+              );
+            } else {
+              const carts = JSON.parse(fileContent);
+              const existingCart = carts.find((cart) => cart.id === cartId);
+              if (existingCart) {
+                const existingProduct = existingCart.products.find(
+                  (product) => product.id === id
+                );
+                if (existingProduct) {
+                  existingProduct.quantity++;
+                } else {
+                  existingCart.products.push({
+                    id: id,
+                    title: title,
+                    price: price,
+                    quantity: 1,
+                  });
+                }
+              } else {
+                carts.push(cart);
+              }
+              fs.writeFile(
+                path.join(__dirname, "../data/carts.json"),
+                JSON.stringify(carts),
+                (err) => {
+                  console.log(err);
+                }
+              );
+            }
+          }
+        );
+      }
+      callback(product);
+    });
+  }
 }
 
 // Export the class
