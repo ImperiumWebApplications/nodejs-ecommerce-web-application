@@ -57,6 +57,20 @@ class Product {
       });
     }
   }
+
+  static deleteById(id) {
+    readProductsFromFile((products) => {
+      const updatedProducts = products.filter((product) => product.id !== id);
+      fs.writeFile(
+        path.join(__dirname, "../data/products.json"),
+        JSON.stringify(updatedProducts),
+        (err) => {
+          console.log(err);
+        }
+      );
+    });
+  }
+
   // Define getProducts method which returns the products array
   static getProducts(callback) {
     readProductsFromFile(callback);
