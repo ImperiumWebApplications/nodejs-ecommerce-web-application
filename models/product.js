@@ -62,11 +62,12 @@ class Product {
   static deleteById(id) {
     readProductsFromFile((products) => {
       const updatedProducts = products.filter((product) => product.id !== id);
+      const productPrice = products.find((product) => product.id === id).price;
       fs.writeFile(
         path.join(__dirname, "../data/products.json"),
         JSON.stringify(updatedProducts),
         (err) => {
-          Cart.removeProduct(id);
+          Cart.removeProduct(id, productPrice);
           console.log(err);
         }
       );
