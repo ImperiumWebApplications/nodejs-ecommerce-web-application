@@ -1,21 +1,4 @@
-// Import the modules for file handling
-const fs = require("fs");
-const path = require("path");
-const Cart = require("./cart");
-
-// Create a helper method readProductsFromFile() which executes a callback with the products from the file.
-const readProductsFromFile = (callback) => {
-  fs.readFile(
-    path.join(__dirname, "../data/products.json"),
-    (err, fileContent) => {
-      if (err) {
-        callback([]);
-      } else {
-        callback(JSON.parse(fileContent));
-      }
-    }
-  );
-};
+const db = require("../util/connection");
 
 class Product {
   constructor(id, title, imageUrl, price, description) {
@@ -25,67 +8,33 @@ class Product {
     this.price = price;
     this.description = description;
   }
+
   save() {
-    // Read the contents of the products.json file and parse it into an array
-    // Append the new product to the array
-    // Write the contents to the products.json file
     if (this.id) {
-      readProductsFromFile((products) => {
-        const existingProductIndex = products.findIndex(
-          (product) => product.id === this.id
-        );
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(
-          path.join(__dirname, "../data/products.json"),
-          JSON.stringify(updatedProducts),
-          (err) => {
-            console.log(err);
-          }
-        );
-      });
+      return db.execute(
+        "UPDATE products SET title = ?, imageUrl = ?, price = ?, description = ? WHERE id = ?",
+        [this.title, this.imageUrl, this.price, this.description, this.id]
+      );
     } else {
       this.id = Math.random().toString();
-      readProductsFromFile((products) => {
-        products.push(this);
-        fs.writeFile(
-          path.join(__dirname, "../data/products.json"),
-          JSON.stringify(products),
-          (err) => {
-            console.log(err);
-          }
-        );
-      });
+      return db.execute(
+        "INSERT INTO products (id, title, imageUrl, price, description) VALUES (?, ?, ?, ?, ?)",
+        [this.id, this.title, this.imageUrl, this.price, this.description]
+      );
     }
   }
 
   static deleteById(id) {
-    readProductsFromFile((products) => {
-      const updatedProducts = products.filter((product) => product.id !== id);
-      const productPrice = products.find((product) => product.id === id).price;
-      fs.writeFile(
-        path.join(__dirname, "../data/products.json"),
-        JSON.stringify(updatedProducts),
-        (err) => {
-          Cart.removeProduct(id, productPrice);
-          console.log(err);
-        }
-      );
-    });
+    return db.execute("DELETE FROM products WHERE id = ?", [id]);
   }
 
-  // Define getProducts method which returns the products array
-  static getProducts(callback) {
-    readProductsFromFile(callback);
+  static fetchAll() {
+    return db.execute("SELECT * FROM products");
   }
 
-  static findById(id, callback) {
-    readProductsFromFile((products) => {
-      const product = products.find((product) => product.id === id);
-      callback(product);
-    });
+  static findById(id) {
+    return db.execute("SELECT * FROM products WHERE id = ?", [id]);
   }
 }
 
-// Export the class
 module.exports = Product;

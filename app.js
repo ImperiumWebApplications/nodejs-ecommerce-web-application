@@ -14,16 +14,6 @@ app.set("view engine", "ejs");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
-// Execute the query to select all rows from the products using the connection pool
-// Parse and log the results
-db.query("SELECT * FROM products")
-.then(([results, metadata]) => {
-    console.log(results);
-})
-.catch((err) => {
-    console.log(err)
-})
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
