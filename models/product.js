@@ -1,4 +1,4 @@
-const db = require("../util/connection");
+const db = require("../util/database");
 
 class Product {
   constructor(id, title, imageUrl, price, description) {
