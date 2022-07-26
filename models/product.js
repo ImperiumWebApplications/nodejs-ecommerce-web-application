@@ -16,10 +16,9 @@ class Product {
         [this.title, this.imageUrl, this.price, this.description, this.id]
       );
     } else {
-      this.id = Math.random().toString();
       return db.execute(
-        "INSERT INTO products (id, title, imageUrl, price, description) VALUES (?, ?, ?, ?, ?)",
-        [this.id, this.title, this.imageUrl, this.price, this.description]
+        "INSERT INTO products (title, imageUrl, price, description) VALUES (?, ?, ?, ?)",
+        [this.title, this.imageUrl, this.price, this.description]
       );
     }
   }
