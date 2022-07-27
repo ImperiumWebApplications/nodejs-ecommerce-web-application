@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize("node-ecommerce", "root", "tiktik123", {
-  host: "localhost",
+  host: "127.0.0.1",
   dialect: "mysql",
   pool: {
     max: 5,
