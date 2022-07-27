@@ -7,6 +7,8 @@ const db = require("./util/database");
 const errorController = require("./controllers/error");
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 const app = express();
 
@@ -37,6 +39,25 @@ app.use(errorController.get404);
 // A product belongs to a user
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
+
+// Products are added to a cart
+Product.belongsToMany(Cart, {
+  through: CartItem,
+  constraints: true,
+  onDelete: "CASCADE",
+});
+Cart.hasMany(Product, {
+  constraints: true,
+  onDelete: "CASCADE",
+});
+
+// A cart belongs to a user
+Cart.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasOne(Cart);
+
+// A cart item belongs to a cart
+CartItem.belongsTo(Cart, { constraints: true, onDelete: "CASCADE" });
+Cart.hasMany(CartItem);
 
 // Sync the database using sequelize
 db.sync()
