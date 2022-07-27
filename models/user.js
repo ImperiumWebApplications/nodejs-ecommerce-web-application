@@ -18,11 +18,7 @@ const User = database.define(
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-    },
-    cart: {
-      type: Sequelize.JSON,
-      allowNull: true,
-    },
+    }
   },
 );
 

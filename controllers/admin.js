@@ -14,20 +14,37 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  // Create the product using the sequelize Product model
-  Product.create({
-    name: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
+
+  req.user
+    .createProduct({
+      name: title,
+      price: price,
+      description: description,
+      imageUrl: imageUrl,
+    })
     .then((result) => {
-      console.log("Created product");
+      console.log(result);
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log("Error creating product: " + err);
+      console.log(err);
     });
+
+  // Create the product using the sequelize Product model
+  // Product.create({
+  //   name: title,
+  //   price: price,
+  //   imageUrl: imageUrl,
+  //   description: description,
+  //   userId: req.user.id,
+  // })
+  //   .then((result) => {
+  //     console.log("Created product");
+  //     res.redirect("/admin/products");
+  //   })
+  //   .catch((err) => {
+  //     console.log("Error creating product: " + err);
+  //   });
 };
 
 exports.getEditProduct = (req, res, next) => {

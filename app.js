@@ -19,6 +19,16 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Add a new middleware to add the user to the request object
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
@@ -31,10 +41,20 @@ User.hasMany(Product);
 // Sync the database using sequelize
 db.sync()
   .then(() => {
-    console.log("Database synced");
+    User.findByPk(1)
+      .then((user) => {
+        if (!user) {
+          return User.create({ name: "John", email: "test@test.com" });
+        }
+        return user;
+      })
+      .then((user) => {
+        app.listen(3000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   })
   .catch((err) => {
     console.log("Error syncing database: " + err);
   });
-
-app.listen(3000);
