@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
+const CartItem = require("../models/cart-item");
 
 exports.getProducts = (req, res, next) => {
   Product.findAll()
@@ -32,13 +33,34 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.getCartItems((cart) => {
-    res.render("shop/cart", {
-      pageTitle: "Your Cart",
-      path: "/cart",
-      cart: cart,
+  // Get the cart associated with the user
+  // The user is available in the request object through req.user
+  // Get the products associated with the cart
+  // Render the cart page
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then((products) => {
+      console.log('products', products);
+      res.render("shop/cart", {
+        path: "/cart", 
+        pageTitle: "Your Cart",
+        products: products,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
+
+  // Cart.getCartItems((cart) => {
+  //   res.render("shop/cart", {
+  //     pageTitle: "Your Cart",
+  //     path: "/cart",
+  //     cart: cart,
+  //   });
+  // });
 };
 
 exports.postCart = (req, res, next) => {

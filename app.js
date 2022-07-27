@@ -46,7 +46,8 @@ Product.belongsToMany(Cart, {
   constraints: true,
   onDelete: "CASCADE",
 });
-Cart.hasMany(Product, {
+Cart.belongsToMany(Product, {
+  through: CartItem,
   constraints: true,
   onDelete: "CASCADE",
 });
@@ -70,7 +71,10 @@ db.sync()
         return user;
       })
       .then((user) => {
-        console.log("Database synced");
+        // Create the cart for the user
+        return user.createCart();
+      })
+      .then((cart) => {
         app.listen(3000);
       })
       .catch((err) => {

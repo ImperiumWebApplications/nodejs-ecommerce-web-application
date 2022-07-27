@@ -8,9 +8,9 @@
             <!-- Check if the cart.items has non null length -->
             <!-- If it does, render all the cart items in an unordered list -->
             <!-- If it doesn't, render a message that says "Your cart is empty" -->
-            <% if (cart.items.length > 0) { %>
+            <% if (products.length > 0) { %>
                 <ul>
-                    <% cart.items.forEach(function(item) { %>
+                    <% products.forEach(function(item) { %>
                         <li>
                             <p>
                                 <%- item.name %>
