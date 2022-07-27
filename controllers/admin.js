@@ -30,18 +30,6 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
-// if (title) {
-//   const product = new Product(null, title, imageUrl, price, description);
-//   product
-//     .save()
-//     .then(() => {
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// }
-
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
