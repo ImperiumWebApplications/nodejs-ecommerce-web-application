@@ -43,9 +43,8 @@ exports.getCart = (req, res, next) => {
       return cart.getProducts();
     })
     .then((products) => {
-      console.log('products', products);
       res.render("shop/cart", {
-        path: "/cart", 
+        path: "/cart",
         pageTitle: "Your Cart",
         products: products,
       });
@@ -65,10 +64,43 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findById(productId, (product) => {
-    Cart.addProduct(product);
-  });
-  res.redirect("/cart");
+  let fetchedCart;
+  // Get the cart associated with the user
+  // The user is available in the request object through req.user
+  // Use the cart to get the product with the productId
+  // Add the product to the cart
+  // Redirect to the cart page
+  req.user
+    .getCart()
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts({ where: { id: productId } });
+    })
+    .then((products) => {
+      // Find whether the product exists within the cart
+      // If it does, increase the quantity
+      // If it doesn't, add the product to the cart
+      let product;
+      if (products.length > 0) {
+        product = products[0];
+      }
+      let newQuantity = 1;
+      if (product) {
+        // ...
+      }
+      return Product.findByPk(productId);
+    })
+    .then((product) => {
+      return fetchedCart.addProduct(product, {
+        through: { quantity: 1 },
+      });
+    })
+    .then((result) => {
+      res.redirect("/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
