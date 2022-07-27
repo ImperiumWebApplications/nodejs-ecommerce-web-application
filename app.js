@@ -49,6 +49,7 @@ db.sync()
         return user;
       })
       .then((user) => {
+        console.log("Database synced");
         app.listen(3000);
       })
       .catch((err) => {

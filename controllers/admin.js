@@ -54,18 +54,34 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = req.params.productId;
-  Product.findByPk(productId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then((products) => {
+      const product = products[0];
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
+        activeAddProduct: true,
       });
     })
     .catch((err) => {
       console.log(err);
     });
+
+  // Product.findByPk(productId)
+  //   .then((product) => {
+  //     res.render("admin/edit-product", {
+  //       pageTitle: "Edit Product",
+  //       path: "/admin/edit-product",
+  //       editing: editMode,
+  //       product: product,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -97,9 +113,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
-    .then((data) => {
-      const products = data.map((item) => item.dataValues);
+  req.user
+    .getProducts()
+    .then((products) => {
       res.render("admin/products", {
         products: products,
         pageTitle: "Admin Products",
