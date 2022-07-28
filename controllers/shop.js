@@ -65,6 +65,7 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   let fetchedCart;
+  let newQuantity = 1;
   // Get the cart associated with the user
   // The user is available in the request object through req.user
   // Use the cart to get the product with the productId
@@ -84,15 +85,16 @@ exports.postCart = (req, res, next) => {
       if (products.length > 0) {
         product = products[0];
       }
-      let newQuantity = 1;
       if (product) {
-        // ...
+        const oldQuantity = product.cartItem.quantity;
+        newQuantity = oldQuantity + 1;
+        return product;
       }
       return Product.findByPk(productId);
     })
     .then((product) => {
       return fetchedCart.addProduct(product, {
-        through: { quantity: 1 },
+        through: { quantity: newQuantity },
       });
     })
     .then((result) => {
