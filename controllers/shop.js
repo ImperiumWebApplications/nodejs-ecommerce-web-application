@@ -178,10 +178,22 @@ exports.postCheckout = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    pageTitle: "Your Orders",
-    path: "/orders",
-  });
+  req.user
+    .getOrders({ include: ["products"] })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Orders",
+        path: "/orders",
+        orders: orders,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // res.render("shop/orders", {
+  //   pageTitle: "Your Orders",
+  //   path: "/orders",
+  // });
 };
 
 exports.getProduct = (req, res, next) => {

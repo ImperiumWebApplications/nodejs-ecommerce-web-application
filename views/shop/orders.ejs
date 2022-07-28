@@ -4,6 +4,33 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
-            <h1>Nothing there!</h1>
+          <!-- The order are available through the orders property -->
+          <!-- The products which were a part of the order are available through the products array -->
+          <!-- Iterate over each array followed by iterating over the products array for each order if the length of order array is greater than 0 -->
+
+          <% if(orders.length>0){%>
+            <% for(var i=0;i<orders.length;i++) { %>
+              <div class="order">
+                <h2>Order #<%= orders[i].id %></h2>
+                <p>
+                  <% if(orders[i].products.length>0){%>
+                    <% for(var j=0;j<orders[i].products.length;j++){%>
+                      <%= orders[i].products[j].name %>
+                      <% if(j<orders[i].products.length-1){%>
+                        ,
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                </p>
+              </div>
+            <% } %>
+            <% } %>
+            <% if(orders.length==0){%>
+              <p>No orders found</p>
+            <% } %>
+
+
+
+
         </main>
         <%- include('../includes/end.ejs') %>
