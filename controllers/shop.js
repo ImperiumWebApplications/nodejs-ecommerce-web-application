@@ -131,6 +131,52 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
+exports.postCheckout = (req, res, next) => {
+  req.user
+    .getCart()
+    .then(
+      (cart) => {
+        return cart.getProducts();
+      }
+      // Get the products associated with the cart
+      // Create an order
+      // Create an order item for each product
+      // Reduce the quantity of each product
+      // Empty the cart
+    )
+    .then((products) => {
+      return req.user
+        .createOrder()
+        .then(
+          (order) => {
+            return order.addProducts(
+              products.map((product) => {
+                product.orderItem = { quantity: product.cartItem.quantity };
+                return product;
+              })
+            );
+          }
+          // Empty the cart
+        )
+        .then(() => {
+          return req.user
+            .getCart()
+            .then(
+              (cart) => {
+                return cart.setProducts(null);
+              }
+              // Redirect to the orders page
+            )
+            .then(() => {
+              res.redirect("/orders");
+            });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     pageTitle: "Your Orders",

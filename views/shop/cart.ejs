@@ -1,4 +1,5 @@
 <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/cart.css">
     </head>
 
     <body>
@@ -9,22 +10,32 @@
             <!-- If it does, render all the cart items in an unordered list -->
             <!-- If it doesn't, render a message that says "Your cart is empty" -->
             <% if (products.length > 0) { %>
-                <ul>
+                <ul class="cart__item-list">
                     <% products.forEach(function(item) { %>
-                        <li>
-                            <p>
+                        <li class="cart__item">
+                            <h1>
                                 <%- item.name %>
-                                (<%- item.cartItem.quantity %>)
-                            </p>
+                            
+                            </h1>
+                            <h2>
+                            Quantity: <%- item.cartItem.quantity %>
+                            </h2>
 
                             <form action="/cart-delete-item" method="post">
                                 <input type="hidden" name="productId" value="<%= item.id %>">
-                                <button type="submit" class="btn">Delete</button>
+                                <button type="submit" class="btn danger">Delete</button>
                             </form>
                           
                         </li>
+                        <hr>
                     <% }); %>
                 </ul>
+                <!-- Checkout form -->
+           <div class="centered">
+            <form action="/create-order" method="post">
+                <button type="submit" class="btn">Checkout</button>
+            </form>
+           </div>
             <% } else { %>
                 <p>Your cart is empty</p>
             <% } %>
