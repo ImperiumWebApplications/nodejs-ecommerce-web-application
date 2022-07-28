@@ -9,6 +9,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const app = express();
 
@@ -59,6 +61,22 @@ User.hasOne(Cart);
 // A cart item belongs to a cart
 CartItem.belongsTo(Cart, { constraints: true, onDelete: "CASCADE" });
 Cart.hasMany(CartItem);
+
+// Order related relations
+Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Order);
+Order.belongsTo(Cart, { constraints: true, onDelete: "CASCADE" });
+Cart.belongsTo(Order);
+Order.belongsToMany(Product, {
+  through: OrderItem,
+  constraints: true,
+  onDelete: "CASCADE",
+});
+Product.belongsToMany(Order, {
+  through: OrderItem,
+  constraints: true,
+  onDelete: "CASCADE",
+});
 
 // Sync the database using sequelize
 db.sync()
