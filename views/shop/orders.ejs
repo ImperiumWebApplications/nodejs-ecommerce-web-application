@@ -15,7 +15,8 @@
                 <p>
                   <% if(orders[i].products.length>0){%>
                     <% for(var j=0;j<orders[i].products.length;j++){%>
-                      <%= orders[i].products[j].name %>
+                      <%= orders[i].products[j].name %> 
+                      (<%= orders[i].products[j].orderItem.quantity %>)
                       <% if(j<orders[i].products.length-1){%>
                         ,
                       <% } %>
