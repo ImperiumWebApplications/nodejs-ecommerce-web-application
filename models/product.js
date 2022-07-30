@@ -1,43 +1,63 @@
-const db = require("../util/database");
-const Sequelize = require("sequelize");
+const getDB = require("../util/database");
 
-// Define the Product model using sequelize
-const Product = db.define("product", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
+class Product {
+  constructor(name, price, imageUrl, description) {
+    this.name = name;
+    this.price = price;
+    this.imageUrl = imageUrl;
+    this.description = description;
+  }
 
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-  price: {
-    type: Sequelize.DOUBLE,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-  description: {
-    type: Sequelize.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-});
+  save() {
+    return getDB().then((db) => {
+      return db
+        .collection("products")
+        .insertOne(this)
+        .then((result) => {
+          console.log("Result from the model: ", result);
+          this._id = result.insertedId;
+          return this;
+        });
+    });
+  }
+
+  static fetchAll() {
+    return getDB().then((db) => {
+      return db
+        .collection("products")
+        .find()
+        .toArray()
+        .then((products) => {
+          return products.map((product) => {
+            return new Product(
+              product.id,
+              product.name,
+              product.price,
+              product.imageUrl,
+              product.description
+            );
+          });
+        });
+    });
+  }
+
+  static findById(id) {
+    return getDB().then((db) => {
+      return db
+        .collection("products")
+        .find({ _id: new getDB.ObjectID(id) })
+        .next()
+        .then((product) => {
+          return new Product(
+            product.id,
+            product.name,
+            product.price,
+            product.imageUrl,
+            product.description
+          );
+        });
+    });
+  }
+}
 
 module.exports = Product;
