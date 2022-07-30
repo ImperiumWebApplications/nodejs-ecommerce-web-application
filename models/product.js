@@ -21,6 +21,27 @@ class Product {
     });
   }
 
+  static updateById(id, name, price, imageUrl, description) {
+    return getDB().then((db) => {
+      return db
+        .collection("products")
+        .updateOne(
+          { _id: mongoDB.ObjectId(id) },
+          {
+            $set: {
+              name: name,
+              price: price,
+              imageUrl: imageUrl,
+              description: description,
+            },
+          }
+        )
+        .then((result) => {
+          return result;
+        });
+    });
+  }
+
   static fetchAll() {
     return getDB().then((db) => {
       return db
@@ -48,13 +69,24 @@ class Product {
         .find({ _id: new mongoDB.ObjectId(id) })
         .next()
         .then((product) => {
-          return new Product(
-            product.id,
-            product.name,
-            product.price,
-            product.imageUrl,
-            product.description
-          );
+          return {
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            imageUrl: product.imageUrl,
+            description: product.description,
+          };
+        });
+    });
+  }
+
+  static deleteById(id) {
+    return getDB().then((db) => {
+      return db
+        .collection("products")
+        .deleteOne({ _id: new mongoDB.ObjectId(id) })
+        .then((result) => {
+          return result;
         });
     });
   }
