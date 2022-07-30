@@ -29,7 +29,6 @@ class Product {
         .then((products) => {
           return products.map((product) => {
             return new Product(
-              product.id,
               product.name,
               product.price,
               product.imageUrl,
