@@ -1,14 +1,13 @@
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize("node-ecommerce", "root", "tiktik123", {
-  host: "127.0.0.1",
-  dialect: "mysql",
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-});
+const mongodb = require("mongodb");
+const mongoClient = mongodb.MongoClient;
+const mongoUrl =
+  "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority";
+const dbName = "shop";
 
-// Export the connection for other files to use
-module.exports = sequelize;
+const connect = async () => {
+  const client = await mongoClient.connect(mongoUrl);
+  const db = client.db(dbName);
+  return db;
+};
+
+module.exports = connect;
