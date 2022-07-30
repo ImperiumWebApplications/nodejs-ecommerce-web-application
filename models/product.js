@@ -14,7 +14,6 @@ class Product {
         .collection("products")
         .insertOne(this)
         .then((result) => {
-          console.log("Result from the model: ", result);
           this._id = result.insertedId;
           return this;
         });
