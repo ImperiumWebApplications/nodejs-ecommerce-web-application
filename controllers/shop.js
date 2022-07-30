@@ -5,6 +5,7 @@ const Product = require("../models/product");
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
     .then((data) => {
+      console.log(data)
       res.render("shop/product-list", {
         products: data,
         pageTitle: "All Products",
@@ -194,17 +195,18 @@ exports.getIndex = (req, res, next) => {
 //   // });
 // };
 
-// exports.getProduct = (req, res, next) => {
-//   const productId = req.params.productId;
-//   Product.findByPk(productId)
-//     .then((product) => {
-//       res.render("shop/product-detail", {
-//         product: product,
-//         pageTitle: product.name,
-//         path: "/products",
-//       });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
+exports.getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  // Use the findById mongodb mehod defined within the product model
+  Product.findById(productId)
+    .then((product) => {
+      res.render("shop/product-detail", {
+        product: product,
+        pageTitle: product.title,
+        path: "/products",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

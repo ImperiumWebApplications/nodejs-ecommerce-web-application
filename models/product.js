@@ -1,7 +1,8 @@
 const getDB = require("../util/database");
+const mongoDB = require("mongodb");
 
 class Product {
-  constructor(name, price, imageUrl, description) {
+  constructor(id, name, price, imageUrl, description) {
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
@@ -28,14 +29,15 @@ class Product {
         .toArray()
         .then((products) => {
           return products.map((product) => {
-            return new Product(
-              product.name,
-              product.price,
-              product.imageUrl,
-              product.description
-            );
+            return {
+              id: product._id,
+              name: product.name,
+              price: product.price,
+              imageUrl: product.imageUrl,
+              description: product.description,
+            };
           });
-        })
+        });
     });
   }
 
@@ -43,7 +45,7 @@ class Product {
     return getDB().then((db) => {
       return db
         .collection("products")
-        .find({ _id: new getDB.ObjectID(id) })
+        .find({ _id: new mongoDB.ObjectId(id) })
         .next()
         .then((product) => {
           return new Product(
