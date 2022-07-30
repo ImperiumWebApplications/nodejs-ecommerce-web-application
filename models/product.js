@@ -35,7 +35,7 @@ class Product {
               product.description
             );
           });
-        });
+        })
     });
   }
 
