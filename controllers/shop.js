@@ -5,7 +5,6 @@ const Product = require("../models/product");
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
     .then((data) => {
-      console.log(data)
       res.render("shop/product-list", {
         products: data,
         pageTitle: "All Products",
@@ -60,6 +59,20 @@ exports.getIndex = (req, res, next) => {
 //   //   });
 //   // });
 // };
+
+exports.postCart = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findById(prodId)
+    .then((product) => {
+      return req.user.addToCart(product);
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // exports.postCart = (req, res, next) => {
 //   const productId = req.body.productId;
