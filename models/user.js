@@ -59,6 +59,62 @@ class User {
     });
   }
 
+  getCart() {
+    return getDB().then((db) => {
+      return db
+        .collection("users")
+        .findOne({ _id: new mongodb.ObjectId(this.id) })
+        .then((user) => {
+          this.cart = user.cart;
+          return db.collection("products").find({
+            _id: { $in: user.cart.items.map((i) => i.productId) },
+          });
+        })
+        .then((products) => {
+          return products.toArray();
+        })
+        .then((items) => {
+          return items.map((item) => {
+            return {
+              ...item,
+              quantity: this.cart.items.find(
+                (i) => i.productId.toString() === item._id.toString()
+              ).quantity,
+            };
+          });
+        })
+        .then((items) => {
+          this.cart.items = items;
+          return this.cart;
+        });
+    });
+  }
+
+  deleteItemFromCart(productId) {
+    const updatedCartItems = this.cart.items.filter(
+      (item) => item.productId.toString() !== productId.toString()
+    );
+    const updatedCart = {
+      items: updatedCartItems,
+      totalPrice:
+        this.cart.totalPrice -
+        this.cart.items.find(
+          (item) => item.productId.toString() === productId.toString()
+        ).quantity *
+          this.cart.items.find(
+            (item) => item.productId.toString() === productId.toString()
+          ).price,
+    };
+    return getDB().then((db) => {
+      return db
+        .collection("users")
+        .updateOne(
+          { _id: new mongodb.ObjectId(this.id) },
+          { $set: { cart: updatedCart } }
+        );
+    });
+  }
+
   static findById(id) {
     return getDB().then((db) => {
       return db

@@ -18,11 +18,11 @@
                             
                             </h1>
                             <h2>
-                            Quantity: <%- item.cartItem.quantity %>
+                            Quantity: <%- item.quantity %>
                             </h2>
 
                             <form action="/cart-delete-item" method="post">
-                                <input type="hidden" name="productId" value="<%= item.id %>">
+                                <input type="hidden" name="productId" value="<%= item._id %>">
                                 <button type="submit" class="btn danger">Delete</button>
                             </form>
                           

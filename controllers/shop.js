@@ -30,6 +30,25 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
+exports.getCart = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((cart) => {
+      // Cart is an object with items and totalPrice
+      const cartItems = cart.items;
+      let totalPrice = cart.totalPrice;
+      res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        products: cartItems,
+        totalPrice: totalPrice,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 // exports.getCart = (req, res, next) => {
 //   // Get the cart associated with the user
 //   // The user is available in the request object through req.user
@@ -117,24 +136,17 @@ exports.postCart = (req, res, next) => {
 //     });
 // };
 
-// exports.postCartDeleteProduct = (req, res, next) => {
-//   const productId = req.body.productId;
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       return cart.getProducts({ where: { id: productId } });
-//     })
-//     .then((products) => {
-//       const product = products[0];
-//       return product.cartItem.destroy();
-//     })
-//     .then(() => {
-//       res.redirect("/cart");
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
+exports.postCartDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  req.user
+    .deleteItemFromCart(productId)
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // exports.getCheckout = (req, res, next) => {
 //   res.render("shop/checkout", {
