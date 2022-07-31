@@ -26,12 +26,35 @@ class User {
   }
 
   addToCart(product) {
+    // If the product is already in the cart, increase the quantity
+    const cartProductIndex = this.cart.items.findIndex(
+      (cp) => cp.productId.toString() === product.id.toString()
+    );
+    let updatedCartItems;
+    if (cartProductIndex >= 0) {
+      // Increase the quantity of the product in the cart
+      const updatedCartItem = { ...this.cart.items[cartProductIndex] };
+      updatedCartItem.quantity++;
+      updatedCartItems = [...this.cart.items];
+      updatedCartItems[cartProductIndex] = updatedCartItem;
+    }
+    // If the product is not in the cart, add it to the cart
+    else {
+      updatedCartItems = [
+        ...this.cart.items,
+        { productId: product.id, quantity: 1 },
+      ];
+    }
+    const updatedCart = {
+      items: updatedCartItems,
+      totalPrice: this.cart.totalPrice + +product.price,
+    };
     return getDB().then((db) => {
       return db
         .collection("users")
         .updateOne(
           { _id: new mongodb.ObjectId(this.id) },
-          { $push: { cart: { productId: product.id, quantity: 1 } } }
+          { $set: { cart: updatedCart } }
         );
     });
   }
