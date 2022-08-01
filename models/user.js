@@ -132,6 +132,41 @@ class User {
     });
   }
 
+  getOrders() {
+    // The method should return the final array which contains the orders as well as the products which are in the orders
+    return getDB().then((db) => {
+      return db
+        .collection("orders")
+        .find({ userId: new mongodb.ObjectId(this.id) })
+        .toArray()
+        .then((orders) => {
+          // All the orders are fetched, now we need to fetch the products which are in the orders
+          // All the orders must be iterated to find the products
+          return Promise.all(
+            orders.map((order) => {
+              return db
+                .collection("products")
+                .find({ _id: { $in: order.items.map((i) => i.productId) } })
+                .toArray()
+                .then((products) => {
+                  return {
+                    ...order,
+                    items: products.map((p) => {
+                      return {
+                        ...p,
+                        quantity: order.items.find(
+                          (i) => i.productId.toString() === p._id.toString()
+                        ).quantity,
+                      };
+                    }),
+                  };
+                });
+            })
+          );
+        });
+    });
+  }
+
   static findById(id) {
     return getDB().then((db) => {
       return db

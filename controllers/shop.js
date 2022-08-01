@@ -166,6 +166,21 @@ exports.postOrder = (req, res, next) => {
     });
 };
 
+exports.getOrders = (req, res, next) => {
+  req.user
+    .getOrders({ include: ["products"] })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 // exports.postCheckout = (req, res, next) => {
 //   req.user
 //     .getCart()

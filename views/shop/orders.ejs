@@ -11,13 +11,13 @@
           <% if(orders.length>0){%>
             <% for(var i=0;i<orders.length;i++) { %>
               <div class="order">
-                <h2>Order #<%= orders[i].id %></h2>
+                <h2>Order #<%= i+1 %> %></h2>
                 <p>
-                  <% if(orders[i].products.length>0){%>
-                    <% for(var j=0;j<orders[i].products.length;j++){%>
-                      <%= orders[i].products[j].name %> 
-                      (<%= orders[i].products[j].orderItem.quantity %>)
-                      <% if(j<orders[i].products.length-1){%>
+                  <% if(orders[i].items.length>0){%>
+                    <% for(var j=0;j<orders[i].items.length;j++){%>
+                      <%= orders[i].items[j].name %> 
+                      (<%= orders[i].items[j].quantity %>)
+                      <% if(j<orders[i].items.length-1){%>
                         ,
                       <% } %>
                     <% } %>
