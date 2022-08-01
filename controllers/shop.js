@@ -155,6 +155,17 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //   });
 // };
 
+exports.postOrder = (req, res, next) => {
+  req.user
+    .addOrder()
+    .then((result) => {
+      res.redirect("/orders");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 // exports.postCheckout = (req, res, next) => {
 //   req.user
 //     .getCart()

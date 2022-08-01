@@ -115,6 +115,23 @@ class User {
     });
   }
 
+  addOrder() {
+    return getDB().then((db) => {
+      return db
+        .collection("orders")
+        .insertOne({ items: this.cart.items, userId: this.id })
+        .then((result) => {
+          this.cart = { items: [], totalPrice: 0 };
+          return db
+            .collection("users")
+            .updateOne(
+              { _id: new mongodb.ObjectId(this.id) },
+              { $set: { cart: this.cart } }
+            );
+        });
+    });
+  }
+
   static findById(id) {
     return getDB().then((db) => {
       return db
