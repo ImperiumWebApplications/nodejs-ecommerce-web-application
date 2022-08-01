@@ -71,7 +71,39 @@ class User {
           });
         })
         .then((products) => {
-          return products.toArray();
+          return db
+            .collection("products")
+            .find()
+            .toArray()
+            .then((allProducts) => {
+              // Check whether the products in the cart also exist in the products collection
+              // If they do not, access the users collection and remove them from the cart for the same
+              // If they do, keep them in the cart
+              this.cart.items.map((item) => {
+                console.log(item);
+                const product = allProducts.find(
+                  (p) =>
+                    item.productId &&
+                    p._id.toString() === item.productId.toString()
+                );
+                if (!product) {
+                  return db.collection("users").updateOne(
+                    { _id: new mongodb.ObjectId(this.id) },
+                    // cart.items is the array from which the product with the id is removed
+                    {
+                      $pull: {
+                        "cart.items": {
+                          productId: item.productId,
+                        },
+                      },
+                    }
+                  );
+                }
+              });
+            })
+            .then(() => {
+              return products.toArray();
+            });
         })
         .then((items) => {
           return items.map((item) => {
