@@ -89,44 +89,30 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
 
-  Product.updateById(
-    productId,
-    updatedTitle,
-    updatedPrice,
-    updatedImageUrl,
-    updatedDescription
-  )
-    .then((result) => {
-      res.redirect("/admin/products");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  Product.findByIdAndUpdate(productId, {
+    title: updatedTitle,
+    price: updatedPrice,
+    description: updatedDescription,
+    imageUrl: updatedImageUrl,
+  })
+    .then(
+      (product) => {
+        res.redirect("/admin/products");
+      }
+      // Update the product with the productId
+
+      // Redirect to the admin/products page
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+      }
+      // Log the error
+    );
 };
 
-// Product.update(
-//   {
-//     name: updatedTitle,
-//     price: updatedPrice,
-//     imageUrl: updatedImageUrl,
-//     description: updatedDescription,
-//   },
-//   {
-//     where: {
-//       id: productId,
-//     },
-//   }
-// )
-//   .then((result) => {
-//     console.log("Updated product");
-//     res.redirect("/admin/products");
-//   })
-//   .catch((err) => {
-//     console.log("Error updating product: " + err);
-//   });
-
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  Product.find()
     .then((products) => {
       res.render("admin/products", {
         products: products,
