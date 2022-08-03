@@ -113,18 +113,27 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
+  // Use find method on the product model to get all the products
+  // Populate the userId for each product with the user's details
   Product.find()
-    .then((products) => {
-      res.render("admin/products", {
-        products: products,
-        pageTitle: "Admin Products",
-        path: "/admin/products",
-        activeProducts: true,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .populate("userId")
+    .then(
+      (products) => {
+        res.render("admin/products", {
+          products: products,
+          pageTitle: "Admin Products",
+          path: "/admin/products",
+          activeProducts: true,
+        });
+      }
+      // Render the products page with the products
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+      }
+      // Log the error
+    );
 };
 
 exports.postDeleteProduct = (req, res, next) => {
