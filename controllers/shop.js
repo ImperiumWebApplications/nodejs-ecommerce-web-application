@@ -248,16 +248,22 @@ exports.getOrders = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  // Use the findById mongodb mehod defined within the product model
   Product.findById(productId)
-    .then((product) => {
-      res.render("shop/product-detail", {
-        product: product,
-        pageTitle: product.title,
-        path: "/products",
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    .then(
+      (product) => {
+        res.render("shop/product-detail", {
+          pageTitle: product.title,
+          path: "/products",
+          product: product,
+        });
+      }
+      // Get the product with the productId
+      // Render the product detail page
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+      }
+      // If the product doesn't exist, redirect to the home page
+    );
 };
