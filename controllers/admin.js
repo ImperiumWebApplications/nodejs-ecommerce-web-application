@@ -116,7 +116,7 @@ exports.getProducts = (req, res, next) => {
   // Use find method on the product model to get all the products
   // Populate the userId for each product with the user's details
   Product.find()
-    .populate("userId")
+    // .populate("userId", "name")
     .then(
       (products) => {
         res.render("admin/products", {
