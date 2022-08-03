@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-// const User = require("./models/userMongoDB");
+const User = require("./models/user");
 
 const app = express();
 
@@ -19,16 +19,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Find the user in the database and set it as the value for req.user
-// app.use((req, res, next) => {
-//   User.findById("62e5f435347621d42f3000e0")
-//     .then((user) => {
-//       req.user = new User(user.name, user.email, user.cart, user._id);
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  User.findById("62ea000b02eb456ce65a82f8")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -41,6 +41,17 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(() => {
+    // Create a user if not a single one exists
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "Test User",
+          email: "test@test.com",
+          cart: { items: [], totalPrice: 0 },
+        });
+        user.save();
+      }
+    });
     console.log("Connected to database");
     app.listen(3000);
   })

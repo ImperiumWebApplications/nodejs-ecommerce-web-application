@@ -128,23 +128,17 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteById(productId)
-    .then((result) => {
-      res.redirect("/admin/products");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  Product.deleteOne({ _id: productId })
+    .then(
+      () => {
+        res.redirect("/admin/products");
+      }
+      // Delete the product with the productId
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+      }
+      // Log the error
+    );
 };
-// Product.destroy({
-//   where: {
-//     id: productId,
-//   },
-// })
-//   .then((result) => {
-//     console.log("Deleted product");
-//     res.redirect("/admin/products");
-//   })
-//   .catch((err) => {
-//     console.log("Error deleting product: " + err);
-//   });
