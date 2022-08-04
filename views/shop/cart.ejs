@@ -14,7 +14,7 @@
                     <% products.forEach(function(item) { %>
                         <li class="cart__item">
                             <h1>
-                                <%- item.name %>
+                                <%- item.productId.title %>
                             
                             </h1>
                             <h2>
@@ -22,7 +22,7 @@
                             </h2>
 
                             <form action="/cart-delete-item" method="post">
-                                <input type="hidden" name="productId" value="<%= item._id %>">
+                                <input type="hidden" name="productId" value="<%= item.productId._id %>">
                                 <button type="submit" class="btn danger">Delete</button>
                             </form>
                           

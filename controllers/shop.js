@@ -33,10 +33,9 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then((cart) => {
-      // Cart is an object with items and totalPrice
-      const cartItems = cart.items;
-      let totalPrice = cart.totalPrice;
+    .then((user) => {
+      const cartItems = user.cart.items;
+      let totalPrice = user.cart.totalPrice;
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
@@ -139,7 +138,7 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
   req.user
-    .deleteItemFromCart(productId)
+    .deleteProductFromCart(productId)
     .then(() => {
       res.redirect("/cart");
     })
