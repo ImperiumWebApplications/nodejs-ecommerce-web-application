@@ -90,5 +90,11 @@ userSchema.methods.deleteProductFromCart = function (productId) {
   });
 };
 
+// Clear cart method for the userSchema
+userSchema.methods.clearCart = function () {
+  this.cart = { items: [], totalPrice: 0 };
+  return this.save();
+};
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
