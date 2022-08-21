@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const mongoDBStore = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -24,6 +25,10 @@ app.use(
     secret: "my secret",
     resave: false,
     saveUninitialized: false,
+    store: new mongoDBStore({
+      uri: "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority",
+      collection: "sessions",
+    }),
   })
 );
 
