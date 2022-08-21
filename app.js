@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const csurf = require("csurf");
 const mongoDBStore = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
@@ -31,6 +32,14 @@ app.use(
     }),
   })
 );
+
+// Csurf middleware
+app.use(csurf());
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 // Find the user in the database and set it as the value for req.user
 app.use((req, res, next) => {
