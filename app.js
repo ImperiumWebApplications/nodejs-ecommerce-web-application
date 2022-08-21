@@ -34,7 +34,7 @@ app.use(
 
 // Find the user in the database and set it as the value for req.user
 app.use((req, res, next) => {
-  User.findById("62ea000b02eb456ce65a82f8")
+  User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
       next();
