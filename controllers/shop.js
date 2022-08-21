@@ -23,7 +23,7 @@ exports.getIndex = (req, res, next) => {
         products: data,
         pageTitle: "Shop",
         path: "/",
-        isLoggedIn: req.headers.cookie.split(';').find(c => c.trim().startsWith('isLoggedIn=')).split('=')[1]
+        isLoggedIn: req.headers.cookie.split(';').find(c => c.trim().startsWith('isLoggedIn='))?.split('=')[1]
       });
     })
     .catch((err) => {
