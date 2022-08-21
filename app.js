@@ -59,17 +59,6 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(() => {
-    // Create a user if not a single one exists
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
-          name: "Test User",
-          email: "test@test.com",
-          cart: { items: [], totalPrice: 0 },
-        });
-        user.save();
-      }
-    });
     console.log("Connected to database");
     app.listen(3000);
   })
