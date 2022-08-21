@@ -1,4 +1,5 @@
 exports.getLogin = (req, res, next) => {
+  console.log(req.session.isLoggedIn);
   // Get the value of isloggedin from the request header
   const isLoggedIn = req.headers.cookie.split(';').find(c => c.trim().startsWith('isLoggedIn='))?.split('=')[1]
   res.render("auth/login", {
@@ -9,6 +10,6 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  res.setHeader("Set-Cookie", "isLoggedIn=true");
+  req.session.isLoggedIn = true;
   res.redirect("/");
 };
