@@ -5,7 +5,8 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key: "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",
+      api_key:
+       process.env.SENDGRID_API_KEY,
     },
   })
 );
@@ -27,6 +28,16 @@ exports.getSignup = (req, res, next) => {
     errorMessage: errorMessage,
   });
 };
+
+exports.getReset = (req, res, next) => {
+  const errorMessage = req.flash("error");
+  res.render("auth/reset", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: errorMessage,
+  });
+};
+
 
 exports.postSignUp = (req, res, next) => {
   const email = req.body.email;
