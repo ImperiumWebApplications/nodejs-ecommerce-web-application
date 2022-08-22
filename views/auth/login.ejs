@@ -9,8 +9,8 @@
 
     <main>
         <!-- Render the message incoming from connect-flash package -->
-        <% if(errorMessage) { %>
-            <div class="message">
+        <% if(errorMessage.length > 0) { %>
+            <div class="user-message user-message__error">
                 <%= errorMessage %>
             </div>
         <% } %>

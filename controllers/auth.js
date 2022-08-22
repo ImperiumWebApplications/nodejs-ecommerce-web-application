@@ -24,8 +24,10 @@ exports.postSignUp = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (user) {
-        // req.flash("error", "Email already exists");
-        return res.redirect("/signup");
+        req.flash("error", "Email already exists");
+        req.session.save(() => {
+          res.redirect("/signup");
+        });
       }
       return bcrypt
         .hash(password, 12)
@@ -56,7 +58,9 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       if (!user) {
         req.flash("error", "Email not found");
-        return res.redirect("/login");
+        req.session.save(() => {
+          res.redirect("/login");
+        });
       }
       return bcrypt
         .compare(password, user.password)
@@ -69,7 +73,9 @@ exports.postLogin = (req, res, next) => {
             });
           }
           req.flash("error", "Password incorrect");
-          return res.redirect("/login");
+          req.session.save(() => {
+            return res.redirect("/login");
+          });
         })
         .catch((err) => {
           console.log(err);
