@@ -8,7 +8,7 @@ exports.getProducts = (req, res, next) => {
         products: products,
         pageTitle: "All Products",
         path: "/products",
-        isLoggedIn: req.session.isLoggedIn
+        
       });
     })
     .catch((err) => {
@@ -23,7 +23,7 @@ exports.getIndex = (req, res, next) => {
         products: data,
         pageTitle: "Shop",
         path: "/",
-        isLoggedIn: req.session.isLoggedIn,
+        
         csrfToken: req.csrfToken(),
       });
     })
@@ -43,7 +43,7 @@ exports.getCart = (req, res, next) => {
         pageTitle: "Your Cart",
         products: cartItems,
         totalPrice: totalPrice,
-        isLoggedIn: req.session.isLoggedIn,
+        
       });
     })
     .catch((err) => {
@@ -184,7 +184,7 @@ exports.getOrders = (req, res, next) => {
         path: "/orders",
         pageTitle: "Your Orders",
         orders: orders,
-        isLoggedIn: req.session.isLoggedIn,
+        
       });
     })
     .catch((err) => {
@@ -266,7 +266,7 @@ exports.getProduct = (req, res, next) => {
           pageTitle: product.title,
           path: "/products",
           product: product,
-          isLoggedIn: req.session.isLoggedIn,
+          
         });
       }
       // Get the product with the productId

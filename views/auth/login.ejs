@@ -8,6 +8,13 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
+        <!-- Render the message incoming from connect-flash package -->
+        <% if(errorMessage) { %>
+            <div class="message">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        
         <form class="login-form" action="/login" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>
