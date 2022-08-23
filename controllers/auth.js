@@ -38,6 +38,29 @@ exports.getReset = (req, res, next) => {
   });
 };
 
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+  const errorMessage = req.flash("error");
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+    .then((user) => {
+      if (user) {
+        return res.render("auth/new-password", {
+          path: "/new-password",
+          pageTitle: "New Password",
+          passwordToken: token,
+          errorMessage: errorMessage,
+          userId: user._id.toString(),
+        });
+      }
+      req.flash("error", "Password reset token is invalid or has expired");
+      return res.redirect("/reset");
+
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.postSignUp = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -46,9 +69,7 @@ exports.postSignUp = (req, res, next) => {
     .then((user) => {
       if (user) {
         req.flash("error", "Email already exists");
-        req.session.save(() => {
-          res.redirect("/signup");
-        });
+        return res.redirect("/signup");
       }
       return bcrypt
         .hash(password, 12)
@@ -91,10 +112,9 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       if (!user) {
         req.flash("error", "Email not found");
-        req.session.save(() => {
-          res.redirect("/login");
-        });
+        return res.redirect("/login");
       }
+      console.log('Outside login method')
       return bcrypt
         .compare(password, user.password)
         .then((doMatch) => {
@@ -106,9 +126,7 @@ exports.postLogin = (req, res, next) => {
             });
           }
           req.flash("error", "Password incorrect");
-          req.session.save(() => {
-            return res.redirect("/login");
-          });
+          return res.redirect("/login");
         })
         .catch((err) => {
           console.log(err);
