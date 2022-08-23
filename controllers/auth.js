@@ -50,11 +50,43 @@ exports.getNewPassword = (req, res, next) => {
           passwordToken: token,
           errorMessage: errorMessage,
           userId: user._id.toString(),
+          token: token,
         });
       }
       req.flash("error", "Password reset token is invalid or has expired");
       return res.redirect("/reset");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
+exports.postNewPassword = (req, res, next) => {
+  const newPassword = req.body.password;
+  const userId = req.body.userId;
+  const passwordToken = req.body.token;
+  let resetUser;
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      if (!user) {
+        req.flash("error", "Password reset token is invalid or has expired");
+        return res.redirect("/reset");
+      }
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then((result) => {
+      res.redirect("/login");
     })
     .catch((err) => {
       console.log(err);
@@ -114,7 +146,7 @@ exports.postLogin = (req, res, next) => {
         req.flash("error", "Email not found");
         return res.redirect("/login");
       }
-      console.log('Outside login method')
+      console.log("Outside login method");
       return bcrypt
         .compare(password, user.password)
         .then((doMatch) => {
