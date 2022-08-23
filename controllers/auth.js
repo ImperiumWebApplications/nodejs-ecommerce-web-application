@@ -1,15 +1,15 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
-const transporter = nodemailer.createTransport(
-  sendgridTransport({
-    auth: {
-      api_key:
-       process.env.SENDGRID_API_KEY,
-    },
-  })
-);
+const crypto = require("crypto");
+const transporter = nodemailer.createTransport({
+  host: "smtp.ethereal.email",
+  port: 587,
+  auth: {
+    user: "verner.bashirian20@ethereal.email",
+    pass: "AD8K9kt911Ta9Ed3As",
+  },
+});
 
 exports.getLogin = (req, res, next) => {
   const errorMessage = req.flash("error");
@@ -38,7 +38,6 @@ exports.getReset = (req, res, next) => {
   });
 };
 
-
 exports.postSignUp = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -65,7 +64,7 @@ exports.postSignUp = (req, res, next) => {
           transporter
             .sendMail({
               to: email,
-              from: "email: test@yopmail.com",
+              from: "email: something@yopmail.com",
               subject: "Signup succeeded",
               html: "<h1>You successfully signed up!</h1>",
             })
@@ -125,4 +124,45 @@ exports.postLogout = (req, res, next) => {
     console.log(err);
   });
   res.redirect("/");
+};
+
+exports.postReset = (req, res, next) => {
+  // Send a token to the user's email
+  // To generate the token, use the library crypto
+  const email = req.body.email;
+  const token = crypto.randomBytes(20).toString("hex");
+  const now = new Date();
+  const expires = new Date(now.getTime() + 3600000); // 1 hour from now
+  console.log(token);
+  console.log(expires);
+  User.findOne({ email: email })
+    .then((user) => {
+      if (!user) {
+        req.flash("error", "No account with that email found");
+        return res.redirect("/reset");
+      }
+      user.resetToken = token;
+      user.resetTokenExpiration = expires;
+      return user.save();
+    })
+    .then((result) => {
+      transporter
+        .sendMail({
+          to: email,
+          from: "somethingElse@yopmail.com",
+          subject: "Password reset",
+          html: `<p>You requested a password reset</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>`,
+        })
+        .then((result) => {
+          req.flash("success", "Email sent");
+          return res.redirect("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
