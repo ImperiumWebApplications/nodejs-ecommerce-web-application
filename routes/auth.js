@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/auth");
 const { body } = require("express-validator");
+
+const authController = require("../controllers/auth");
+const User = require("../models/user");
+
 
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
@@ -13,7 +16,15 @@ router.post("/reset", authController.postReset);
 router.post(
   "/signup",
   [
-    body("email").isEmail().withMessage("Email must be valid"),
+    body("email")
+      .isEmail()
+      .withMessage("Email must be valid")
+      .custom(async (value, { req }) => {
+        const user = await User.findOne({ email: value });
+        if (user) {
+          return Promise.reject("Email already in use");
+        }
+      }),
     body("password")
       .trim()
       .isLength({ min: 4, max: 20 })
