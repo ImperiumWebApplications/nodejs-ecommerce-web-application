@@ -5,7 +5,6 @@ const { body } = require("express-validator");
 const authController = require("../controllers/auth");
 const User = require("../models/user");
 
-
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
 router.get("/reset", authController.getReset);
@@ -19,6 +18,7 @@ router.post(
     body("email")
       .isEmail()
       .withMessage("Email must be valid")
+      .normalizeEmail()
       .custom(async (value, { req }) => {
         const user = await User.findOne({ email: value });
         if (user) {
@@ -41,7 +41,19 @@ router.post(
   ],
   authController.postSignUp
 );
-router.post("/login", authController.postLogin);
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Email must be valid").normalizeEmail(),
+
+    body("password")
+      .trim()
+      .isLength({ min: 4, max: 20 })
+      .withMessage("Password must be between 4 and 20 characters"),
+  ],
+
+  authController.postLogin
+);
 router.post("/logout", authController.postLogout);
 
 module.exports = router;

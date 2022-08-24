@@ -19,6 +19,10 @@ exports.getLogin = (req, res, next) => {
     path: "/login",
     pageTitle: "Login",
     errorMessage: errorMessage,
+    oldInput: {
+      email: "",
+      password: "",
+    },
   });
 };
 
@@ -151,14 +155,15 @@ exports.postSignUp = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "Email not found");
+        req.flash("error", "Invalid email or password");
         return res.redirect("/login");
       }
-      console.log("Outside login method");
-      return bcrypt
+
+      bcrypt
         .compare(password, user.password)
         .then((doMatch) => {
           if (doMatch) {
