@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth");
+const { body } = require("express-validator");
 
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
@@ -9,7 +10,17 @@ router.get("/reset/:token", authController.getNewPassword);
 
 router.post("/new-password", authController.postNewPassword);
 router.post("/reset", authController.postReset);
-router.post("/signup", authController.postSignUp);
+router.post(
+  "/signup",
+  [
+    body("email").isEmail().withMessage("Email must be valid"),
+    body("password")
+      .trim()
+      .isLength({ min: 4, max: 20 })
+      .withMessage("Password must be between 4 and 20 characters"),
+  ],
+  authController.postSignUp
+);
 router.post("/login", authController.postLogin);
 router.post("/logout", authController.postLogout);
 
