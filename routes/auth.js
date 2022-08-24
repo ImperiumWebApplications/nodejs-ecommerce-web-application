@@ -18,6 +18,15 @@ router.post(
       .trim()
       .isLength({ min: 4, max: 20 })
       .withMessage("Password must be between 4 and 20 characters"),
+    //   Custom validation
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords don't match");
+        }
+        return true;
+      }),
   ],
   authController.postSignUp
 );
