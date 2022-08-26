@@ -18,7 +18,6 @@ router.post(
     body("email")
       .isEmail()
       .withMessage("Email must be valid")
-      .normalizeEmail()
       .custom(async (value, { req }) => {
         const user = await User.findOne({ email: value });
         if (user) {
@@ -44,7 +43,7 @@ router.post(
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Email must be valid").normalizeEmail(),
+    body("email").isEmail().withMessage("Email must be valid"),
 
     body("password")
       .trim()
