@@ -14,6 +14,7 @@ exports.getAddProduct = (req, res, next) => {
       description: "",
       imageUrl: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -36,6 +37,7 @@ exports.postAddProduct = (req, res, next) => {
         description: description,
       },
       errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
     });
   }
 
@@ -71,6 +73,7 @@ exports.getEditProduct = (req, res, next) => {
         product: product,
         activeAddProduct: true,
         errorMessage: "",
+        validationErrors: [],
       });
     })
     .catch((err) => {
@@ -130,6 +133,7 @@ exports.postEditProduct = (req, res, next) => {
         id: productId,
       },
       errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
     });
   }
 
