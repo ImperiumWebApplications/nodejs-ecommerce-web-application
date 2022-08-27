@@ -1,5 +1,4 @@
 const { validationResult } = require("express-validator");
-const mongoose = require("mongoose");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -45,7 +44,6 @@ exports.postAddProduct = (req, res, next) => {
   // Product is a mongoose model
   // Use the mongoose model methods to create a product
   Product.create({
-    _id: new mongoose.Types.ObjectId("6304566a980690a749df1079"),
     title: title,
     price: price,
     description: description,
