@@ -39,7 +39,6 @@ app.use(
 // Connect Flash configuration
 app.use(flash());
 
-
 // Csurf middleware
 app.use(csurf());
 app.use((req, res, next) => {
@@ -55,11 +54,14 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      if (!user) {
+        return next();
+      }
       req.user = user;
       next();
     })
     .catch((err) => {
-      console.log(err);
+      throw new Error(err);
     });
 });
 
@@ -69,15 +71,24 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-mongoose
-  .connect(
-    "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority",
-    { useNewUrlParser: true }
-  )
-  .then(() => {
-    console.log("Connected to database");
-    app.listen(3000);
-  })
-  .catch((err) => {
-    console.log(err);
+// Express error handling middleware
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render(...);
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
   });
+}),
+  mongoose
+    .connect(
+      "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority",
+      { useNewUrlParser: true }
+    )
+    .then(() => {
+      console.log("Connected to database");
+      app.listen(3000);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
