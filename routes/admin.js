@@ -38,7 +38,24 @@ router.post(
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
 
 // // /admin/edit-product => POST
-router.post("/edit-product", isAuth, adminController.postEditProduct);
+router.post(
+  "/edit-product",
+  isAuth,
+  [
+    body("title")
+      .isString()
+      .isLength({ min: 5 })
+      .trim()
+      .withMessage("Title must be at least 5 characters long"),
+    body("imageUrl").isURL().withMessage("Image URL must be valid"),
+    body("price")
+      .isFloat({ gt: 0 })
+      .withMessage("Price must be greater than 0"),
+    body("description").isLength({ min: 5, max: 400 }),
+  ],
+
+  adminController.postEditProduct
+);
 
 // // /admin/delete-product => POST
 router.post("/delete-product", isAuth, adminController.postDeleteProduct);
