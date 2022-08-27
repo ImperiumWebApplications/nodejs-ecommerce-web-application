@@ -23,6 +23,7 @@ exports.getLogin = (req, res, next) => {
       email: "",
       password: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -159,6 +160,7 @@ exports.postLogin = (req, res, next) => {
   const password = req.body.password;
 
   const errors = validationResult(req);
+  const validationErrors = errors.array();
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/login", {
       path: "/login",
@@ -168,6 +170,7 @@ exports.postLogin = (req, res, next) => {
         email: email,
         password: password,
       },
+      validationErrors: validationErrors,
     });
   }
 
