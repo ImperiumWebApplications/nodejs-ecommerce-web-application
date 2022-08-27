@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -6,6 +7,13 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add-product",
     activeAddProduct: true,
     editing: false,
+    errorMessage: "",
+    product: {
+      title: "",
+      price: "",
+      description: "",
+      imageUrl: "",
+    },
   });
 };
 
@@ -14,6 +22,23 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      activeAddProduct: true,
+      editing: false,
+      product: {
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description,
+      },
+      errorMessage: errors.array()[0].msg,
+    });
+  }
+
   // Product is a mongoose model
   // Use the mongoose model methods to create a product
   Product.create({
@@ -148,11 +173,9 @@ exports.postDeleteProduct = (req, res, next) => {
         .then(() => {
           res.redirect("/admin/products");
         })
-        .catch(
-          (err) => {
-            console.log(err);
-          }
-        );
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);

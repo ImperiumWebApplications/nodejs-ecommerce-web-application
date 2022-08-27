@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const adminController = require("../controllers/admin");
 const isAuth = require("../middleware/isAuth");
+const { body } = require("express-validator");
 
 const router = express.Router();
 
@@ -12,7 +13,26 @@ router.get("/add-product", isAuth, adminController.getAddProduct);
 router.get("/products", isAuth, adminController.getProducts);
 
 // /admin/add-product => POST
-router.post("/add-product", isAuth, adminController.postAddProduct);
+router.post(
+  "/add-product",
+  isAuth,
+  [
+    body("title")
+      .isString()
+      .isLength({ min: 5 })
+      .trim()
+      .withMessage("Title must be at least 5 characters long"),
+    body("imageUrl").isURL().withMessage("Image URL must be valid"),
+    body("price")
+      .isFloat({ gt: 0 })
+      .withMessage("Price must be greater than 0"),
+    body("description")
+      .isLength({ min: 5, max: 400 })
+      .withMessage("Description must be between 5 and 400 characters long"),
+  ],
+
+  adminController.postAddProduct
+);
 
 // /admin/edit-product => GET
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
