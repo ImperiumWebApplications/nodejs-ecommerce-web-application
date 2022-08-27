@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
+const mongoose = require("mongoose");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -44,6 +45,7 @@ exports.postAddProduct = (req, res, next) => {
   // Product is a mongoose model
   // Use the mongoose model methods to create a product
   Product.create({
+    _id: new mongoose.Types.ObjectId("6304566a980690a749df1079"),
     title: title,
     price: price,
     description: description,
@@ -77,7 +79,7 @@ exports.getEditProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err);
     });
 };
 
@@ -152,11 +154,11 @@ exports.postEditProduct = (req, res, next) => {
           res.redirect("/admin/products");
         })
         .catch((err) => {
-          console.log(err);
+          return next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err);
     });
 };
 
@@ -178,7 +180,7 @@ exports.getProducts = (req, res, next) => {
     )
     .catch(
       (err) => {
-        console.log(err);
+       return next(err);
       }
       // Log the error
     );
@@ -197,10 +199,10 @@ exports.postDeleteProduct = (req, res, next) => {
           res.redirect("/admin/products");
         })
         .catch((err) => {
-          console.log(err);
+          return next(err);
         });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };

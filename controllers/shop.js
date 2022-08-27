@@ -12,7 +12,7 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -28,7 +28,7 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -47,7 +47,7 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -69,7 +69,7 @@ exports.getCart = (req, res, next) => {
 //       });
 //     })
 //     .catch((err) => {
-//       console.log(err);
+//       return next(err)
 //     });
 
 //   // Cart.getCartItems((cart) => {
@@ -91,7 +91,7 @@ exports.postCart = (req, res, next) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -134,7 +134,7 @@ exports.postCart = (req, res, next) => {
 //       res.redirect("/cart");
 //     })
 //     .catch((err) => {
-//       console.log(err);
+//       return next(err)
 //     });
 // };
 
@@ -146,7 +146,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -172,7 +172,7 @@ exports.postOrder = (req, res, next) => {
       res.redirect("/orders");
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -188,7 +188,7 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      return next(err)
     });
 };
 
@@ -234,7 +234,7 @@ exports.getOrders = (req, res, next) => {
 //         });
 //     })
 //     .catch((err) => {
-//       console.log(err);
+//       return next(err)
 //     });
 // };
 
@@ -249,7 +249,7 @@ exports.getOrders = (req, res, next) => {
 //       });
 //     })
 //     .catch((err) => {
-//       console.log(err);
+//       return next(err)
 //     });
 //   // res.render("shop/orders", {
 //   //   pageTitle: "Your Orders",
@@ -274,7 +274,7 @@ exports.getProduct = (req, res, next) => {
     )
     .catch(
       (err) => {
-        console.log(err);
+        return next(err)
       }
       // If the product doesn't exist, redirect to the home page
     );
