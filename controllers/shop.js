@@ -1,5 +1,7 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
+const fs = require("fs");
+const path = require("path");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -8,11 +10,10 @@ exports.getProducts = (req, res, next) => {
         products: products,
         pageTitle: "All Products",
         path: "/products",
-        
       });
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -23,12 +24,12 @@ exports.getIndex = (req, res, next) => {
         products: data,
         pageTitle: "Shop",
         path: "/",
-        
+
         csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -43,11 +44,10 @@ exports.getCart = (req, res, next) => {
         pageTitle: "Your Cart",
         products: cartItems,
         totalPrice: totalPrice,
-        
       });
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -91,7 +91,7 @@ exports.postCart = (req, res, next) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -146,7 +146,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -172,7 +172,7 @@ exports.postOrder = (req, res, next) => {
       res.redirect("/orders");
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -184,11 +184,10 @@ exports.getOrders = (req, res, next) => {
         path: "/orders",
         pageTitle: "Your Orders",
         orders: orders,
-        
       });
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
 
@@ -266,7 +265,6 @@ exports.getProduct = (req, res, next) => {
           pageTitle: product.title,
           path: "/products",
           product: product,
-          
         });
       }
       // Get the product with the productId
@@ -274,8 +272,54 @@ exports.getProduct = (req, res, next) => {
     )
     .catch(
       (err) => {
-        return next(err)
+        return next(err);
       }
       // If the product doesn't exist, redirect to the home page
+    );
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error("No order found."));
+      }
+      if (order.user.toString() !== req.user._id.toString()) {
+        return next(new Error("Unauthorized"));
+      }
+      const invoiceName = "invoice-" + orderId + ".pdf";
+      const invoicePath = path.join("data", "invoices", invoiceName);
+      fs.readFile(
+        invoicePath,
+        (err, data) => {
+          if (err) {
+            return next(err);
+          }
+          // res.setHeader("Content-Type", "application/pdf");
+          // res.setHeader(
+          //   "Content-Disposition",
+          //   "inline; filename=" + invoiceName
+          // );
+          // Set the headers to download the file
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + invoiceName
+          );
+
+          res.send(data);
+        }
+        // Read the invoice file
+        // Set the content type to pdf
+        // Set the content disposition to inline
+        // Send the invoice file
+      );
+    })
+    .catch(
+      (err) => {
+        return next(err);
+      }
+      // If the order doesn't exist, redirect to the home page
     );
 };
