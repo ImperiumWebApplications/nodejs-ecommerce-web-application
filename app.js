@@ -30,7 +30,9 @@ const multerStorage = multer.diskStorage({
     cb(null, path.join(__dirname, "images"));
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    // The filename should be a unique combination of the current date and the original filename
+    const filename = `${Date.now()}-${file.originalname}`;
+    cb(null, filename);
   },
 });
 const multerFilter = (req, file, cb) => {
@@ -40,7 +42,14 @@ const multerFilter = (req, file, cb) => {
     cb(new Error("Not an image!"), false);
   }
 };
-const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+// Use multer upload middleware to upload images to the /images folder
+
+app.use(upload.single("image"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -99,16 +108,16 @@ app.use((error, req, res, next) => {
     isAuthenticated: req.session.isLoggedIn,
     errorMessage: error.message,
   });
-}),
-  mongoose
-    .connect(
-      "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority",
-      { useNewUrlParser: true }
-    )
-    .then(() => {
-      console.log("Connected to database");
-      app.listen(3000);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+});
+mongoose
+  .connect(
+    "mongodb+srv://root:tiktik123@cluster0.lhsfo.mongodb.net/?retryWrites=true&w=majority",
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    console.log("Connected to database");
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });

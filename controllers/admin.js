@@ -21,7 +21,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
   const errors = validationResult(req);
@@ -45,11 +45,10 @@ exports.postAddProduct = (req, res, next) => {
   // Product is a mongoose model
   // Use the mongoose model methods to create a product
   Product.create({
-    _id: new mongoose.Types.ObjectId("6304566a980690a749df1079"),
     title: title,
     price: price,
     description: description,
-    imageUrl: imageUrl,
+    imageUrl: imageUrl.path,
     userId: req.user,
   })
     .then((newProduct) => {
@@ -180,7 +179,7 @@ exports.getProducts = (req, res, next) => {
     )
     .catch(
       (err) => {
-       return next(err);
+        return next(err);
       }
       // Log the error
     );
@@ -203,6 +202,6 @@ exports.postDeleteProduct = (req, res, next) => {
         });
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 };
