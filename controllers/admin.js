@@ -214,6 +214,12 @@ exports.postDeleteProduct = (req, res, next) => {
       if (product.userId.toString() !== req.user._id.toString()) {
         return res.redirect("/");
       }
+      const imageUrl = product.imageUrl;
+      fs.unlink(path.join(__dirname, "..", imageUrl), (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
       Product.findByIdAndDelete(productId)
         .then(() => {
           res.redirect("/admin/products");
