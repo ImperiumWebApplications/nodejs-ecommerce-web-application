@@ -40,6 +40,20 @@
                             </article>
                             <% } %>
                     </div>
+                    <section class="pagination">
+                        <!-- The template will receieve currentPage, hasNextPage, hasPreviousPage, nextPage, previousPage and lastPage -->
+                        <!-- Use the above data to prepare dynamic pagination -->
+                        <% if (hasPreviousPage) { %>
+                            <a href="/products/?page=<%= previousPage %>" class="btn">Previous</a>
+                        <% } %>
+                        <!-- Current page -->
+                        <a href="/products/?page=<%= currentPage %>" class="btn"><%= currentPage %></a>
+        
+                        <% if (hasNextPage) { %>
+                            <a href="/products/?page=<%= nextPage %>" class="btn">Next</a>
+                        <% } %>
+        
+                    </section>
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>

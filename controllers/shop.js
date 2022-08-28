@@ -7,13 +7,30 @@ const PDFDocument = require("pdfkit");
 const ITEMS_PER_PAGE = 2;
 
 exports.getProducts = (req, res, next) => {
+  const page = req.query.page || 1;
   Product.find()
-    .then((products) => {
-      res.render("shop/product-list", {
-        products: products,
-        pageTitle: "All Products",
-        path: "/products",
-      });
+    .countDocuments()
+    .then((totalProducts) => {
+      Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+        .then((products) => {
+          res.render("shop/product-list", {
+            products: products,
+            pageTitle: "All Products",
+            path: "/products",
+            csrfToken: req.csrfToken(),
+            currentPage: page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalProducts,
+            hasPreviousPage: page > 1,
+            nextPage: parseInt(page) + 1,
+            previousPage: parseInt(page) - 1,
+            lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE),
+          });
+        })
+        .catch((err) => {
+          return next(err);
+        });
     })
     .catch((err) => {
       return next(err);
