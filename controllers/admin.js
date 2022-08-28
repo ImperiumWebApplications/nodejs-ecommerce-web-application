@@ -51,7 +51,6 @@ exports.postAddProduct = (req, res, next) => {
       editing: false,
       product: {
         title: title,
-        image: image,
         price: price,
         description: description,
       },
