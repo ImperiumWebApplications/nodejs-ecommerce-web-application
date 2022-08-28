@@ -11,12 +11,12 @@
           <% if(orders.length>0){%>
             <% for(var i=0;i<orders.length;i++) { %>
               <div class="order">
-                <h2>Order #<%= i+1 %> %></h2>
+                <h2>Order #<%= i+1 %> %></h2> - <a href="/orders/<%= orders[i]._id%>">Invoice</a>
                 <p>
                   <% if(orders[i].products.length>0){%>
                     <% for(var j=0;j<orders[i].products.length;j++){%>
                       <%= orders[i].products[j].productId.title %> 
-                      (<%= orders[i].products[j].quantity %>) - <a href="/orders/<%= orders[i]._id%>">Invoice</a>
+                      (<%= orders[i].products[j].quantity %>) 
                       <% if(j<orders[i].products.length-1){%>
                         ,
                       <% } %>
