@@ -22,7 +22,6 @@ router.post(
       .isLength({ min: 5 })
       .trim()
       .withMessage("Title must be at least 5 characters long"),
-    body("imageUrl").isURL().withMessage("Image URL must be valid"),
     body("price")
       .isFloat({ gt: 0 })
       .withMessage("Price must be greater than 0"),

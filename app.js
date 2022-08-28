@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const csurf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 const mongoDBStore = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
@@ -23,6 +24,24 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
+// Configure multer to upload images to the /images folder
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "images"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image!"), false);
+  }
+};
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
@@ -61,7 +80,7 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => {
-      return next(err)
+      return next(err);
     });
 });
 
