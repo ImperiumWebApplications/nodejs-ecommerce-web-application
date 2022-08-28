@@ -22,17 +22,30 @@ exports.getProducts = (req, res, next) => {
 
 exports.getIndex = (req, res, next) => {
   const page = req.query.page || 1;
-  Product.find()
-    .skip((page - 1) * ITEMS_PER_PAGE)
-    .limit(ITEMS_PER_PAGE)
-    .then((data) => {
-      res.render("shop/index", {
-        products: data,
-        pageTitle: "Shop",
-        path: "/",
 
-        csrfToken: req.csrfToken(),
-      });
+  Product.find()
+    .countDocuments()
+    .then((totalProducts) => {
+      Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+        .then((data) => {
+          res.render("shop/index", {
+            products: data,
+            pageTitle: "Shop",
+            path: "/",
+            csrfToken: req.csrfToken(),
+            currentPage: page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalProducts,
+            hasPreviousPage: page > 1,
+            nextPage: parseInt(page) + 1,
+            previousPage: parseInt(page) - 1,
+            lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE),
+          });
+        })
+        .catch((err) => {
+          return next(err);
+        });
     })
     .catch((err) => {
       return next(err);
