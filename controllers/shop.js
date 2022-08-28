@@ -290,31 +290,40 @@ exports.getInvoice = (req, res, next) => {
       }
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
-      fs.readFile(
-        invoicePath,
-        (err, data) => {
-          if (err) {
-            return next(err);
-          }
-          // res.setHeader("Content-Type", "application/pdf");
-          // res.setHeader(
-          //   "Content-Disposition",
-          //   "inline; filename=" + invoiceName
-          // );
-          // Set the headers to download the file
-          res.setHeader("Content-Type", "application/pdf");
-          res.setHeader(
-            "Content-Disposition",
-            "attachment; filename=" + invoiceName
-          );
+      // fs.readFile(
+      //   invoicePath,
+      //   (err, data) => {
+      //     if (err) {
+      //       return next(err);
+      //     }
+      //     // res.setHeader("Content-Type", "application/pdf");
+      //     // res.setHeader(
+      //     //   "Content-Disposition",
+      //     //   "inline; filename=" + invoiceName
+      //     // );
+      //     // Set the headers to download the file
+      //     res.setHeader("Content-Type", "application/pdf");
+      //     res.setHeader(
+      //       "Content-Disposition",
+      //       "attachment; filename=" + invoiceName
+      //     );
 
-          res.send(data);
-        }
-        // Read the invoice file
-        // Set the content type to pdf
-        // Set the content disposition to inline
-        // Send the invoice file
+      //     res.send(data);
+      //   }
+      //   // Read the invoice file
+      //   // Set the content type to pdf
+      //   // Set the content disposition to inline
+      //   // Send the invoice file
+      // );
+
+      // Stream the invoice file
+      const file = fs.createReadStream(invoicePath);
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + invoiceName
       );
+      file.pipe(res);
     })
     .catch(
       (err) => {
