@@ -41,7 +41,7 @@
             <button class="btn" type="submit">Add Product</button>
         </form>
         <% } else { %>
-        <form class="product-form" action="/admin/edit-product" method="POST">
+        <form class="product-form" action="/admin/edit-product" method="POST" enctype="multipart/form-data">
             <div class="form-control">
                 <label for="title">Title</label>
                 <input class="<%= validationErrors.find(error => error.param === 'title') ? 'invalid' : '' %>" type="text" name="title" id="title" value="<%= product.title %>">

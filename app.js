@@ -36,10 +36,10 @@ const multerStorage = multer.diskStorage({
   },
 });
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/jpg") {
     cb(null, true);
   } else {
-    cb(new Error("Not an image!"), false);
+    cb(null, false);
   }
 };
 const upload = multer({
@@ -52,6 +52,8 @@ const upload = multer({
 app.use(upload.single("image"));
 
 app.use(express.static(path.join(__dirname, "public")));
+// Serve the images folder
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   session({
     secret: "my secret",
