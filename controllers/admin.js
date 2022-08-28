@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
-const mongoose = require("mongoose");
+const Order = require("../models/order");
 const fs = require("fs");
 const path = require("path");
 
@@ -221,6 +221,10 @@ exports.postDeleteProduct = (req, res, next) => {
         }
       });
       Product.findByIdAndDelete(productId)
+        .then(() => {
+          // Delete the associated orders
+          return Order.deleteMany({ product: productId });
+        })
         .then(() => {
           res.redirect("/admin/products");
         })
