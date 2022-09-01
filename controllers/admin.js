@@ -207,7 +207,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  const productId = req.body.productId;
+  const productId = req.params.productId;
 
   Product.findById(productId)
     .then((product) => {
@@ -226,13 +226,15 @@ exports.postDeleteProduct = (req, res, next) => {
           return Order.deleteMany({ product: productId });
         })
         .then(() => {
-          res.redirect("/admin/products");
+          // res.redirect("/admin/products");
+          return res.status(200).json({ message: "Success!" });
         })
         .catch((err) => {
           return next(err);
         });
     })
     .catch((err) => {
-      return next(err);
+      // return next(err);
+      return res.status(500).json({ message: "Error!", error: err });
     });
 };
