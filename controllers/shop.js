@@ -425,6 +425,7 @@ exports.postCheckout = (req, res, next) => {
 };
 
 exports.getCheckoutSucceeded = (req, res, next) => {
+  console.log('Entered the getCheckoutSucceeded function')
   const order = new Order({
     user: req.user,
     products: req.user.cart.items,
