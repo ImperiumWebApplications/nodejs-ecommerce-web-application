@@ -34,11 +34,12 @@
                 </ul>
                 <!-- Checkout form -->
            <div class="centered">
-            <form action="/create-order" method="post">
+            <!-- <form action="/create-order" method="post">
                 <input name="_csrf" type="hidden" value="<%= csrfToken %>">
 
                 <button type="submit" class="btn">Checkout</button>
-            </form>
+            </form> -->
+            <a class="btn" href="/checkout">Order Now</a>
            </div>
             <% } else { %>
                 <p>Your cart is empty</p>

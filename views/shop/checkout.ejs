@@ -1,0 +1,28 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+        <main>
+            <ul class="cart__item-list">
+                <% products.forEach(function(item) { %>
+                    <li class="cart__item">
+                        <h1>
+                            <%- item.productId.title %>
+                        
+                        </h1>
+                        <h2>
+                        Quantity: <%- item.quantity %>
+                        </h2>
+                    </li>
+                    <hr>
+                <% }); %>
+            </ul>
+            <div class="total-sum centered">
+                <h1>Total: <%- totalSum %></h1>
+            </div>
+        </main>
+
+        <%- include('../includes/end.ejs') %>

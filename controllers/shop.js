@@ -357,3 +357,21 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.end();
     });
 };
+
+exports.getCheckout = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((user) => {
+      const cartItems = user.cart.items;
+      let totalPrice = user.cart.totalPrice;
+      res.render("shop/checkout", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        products: cartItems,
+        totalSum: totalPrice,
+      });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
