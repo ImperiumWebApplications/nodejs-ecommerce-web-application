@@ -3,6 +3,10 @@ const Order = require("../models/order");
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const ITEMS_PER_PAGE = 2;
 
@@ -365,11 +369,74 @@ exports.getCheckout = (req, res, next) => {
       const cartItems = user.cart.items;
       let totalPrice = user.cart.totalPrice;
       res.render("shop/checkout", {
-        path: "/cart",
-        pageTitle: "Your Cart",
+        path: "/checkout",
+        pageTitle: "Checkout",
         products: cartItems,
         totalSum: totalPrice,
       });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+exports.postCheckout = (req, res, next) => {
+  let cartItems;
+  let totalPrice;
+
+  req.user.getCart().then((user) => {
+    cartItems = user.cart.items;
+    totalPrice = user.cart.totalPrice;
+    stripe.checkout.sessions
+      .create({
+        payment_method_types: ["card"],
+        line_items: cartItems.map(
+          (cartItem) => {
+            return {
+              name: cartItem.productId.title,
+              description: cartItem.productId.description,
+              amount: cartItem.productId.price * 100,
+              currency: "usd",
+              quantity: cartItem.quantity,
+            };
+          }
+          // Create an array of line items
+          // Each line item has a name, description, amount, currency, quantity
+        ),
+        success_url:
+          req.protocol + "://" + req.get("host") + "/checkout/success",
+        cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+      })
+      .then((session) => {
+        return res.redirect(session.url);
+      })
+      // Create a checkout session
+      // Render the checkout page with the session ID
+
+      .catch(
+        (err) => {
+          return next(err);
+        }
+        // If there is an error, redirect to the home page
+      );
+  });
+
+  // res.redirect(303, session.url);
+};
+
+exports.getCheckoutSucceeded = (req, res, next) => {
+  const order = new Order({
+    user: req.user,
+    products: req.user.cart.items,
+    totalPrice: req.user.cart.totalPrice,
+  });
+  order
+    .save()
+    .then(() => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
     })
     .catch((err) => {
       return next(err);

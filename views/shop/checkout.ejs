@@ -23,6 +23,13 @@
             <div class="total-sum centered">
                 <h1>Total: <%- totalSum %></h1>
             </div>
+          <div class="centered">
+            <form action="/checkout" method="POST">
+                <!-- CSRF token -->
+                <input type="hidden" name="_csrf" value="<%- csrfToken %>">
+                <button class="btn" type="submit">Checkout</button>
+              </form>
+          </div>
         </main>
 
         <%- include('../includes/end.ejs') %>
